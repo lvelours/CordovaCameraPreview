@@ -248,7 +248,6 @@
             dispatch_group_t group = dispatch_group_create();
 
             __block NSString *originalPicturePath;
-            __block NSString *previewPicturePath;
 
             ALAssetOrientation orientation;
             switch ([[UIApplication sharedApplication] statusBarOrientation]) {
@@ -265,18 +264,6 @@
                 default:
                     orientation = ALAssetOrientationRight;
             }
-
-            // task 1
-            dispatch_group_enter(group);
-            [library writeImageToSavedPhotosAlbum:previewImage orientation:ALAssetOrientationUp completionBlock:^(NSURL *assetURL, NSError *error) {
-                if (error) {
-                     NSLog(@"FAILED to save Preview picture.");
-                } else {
-                     previewPicturePath = [assetURL absoluteString];
-                     NSLog(@"previewPicturePath: %@", previewPicturePath);
-                     dispatch_group_leave(group);
-                }
-            }];
                 
             //task 2
             dispatch_group_enter(group);
@@ -289,11 +276,9 @@
                 }
                 dispatch_group_leave(group);
             }];
-
             dispatch_group_notify(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
                 NSMutableArray *params = [[NSMutableArray alloc] init];
                 [params addObject:originalPicturePath];
-                [params addObject:previewPicturePath];
              
                 CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:params];
                 [pluginResult setKeepCallbackAsBool:true];
