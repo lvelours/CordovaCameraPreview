@@ -62,7 +62,7 @@ public class CameraPreview extends CordovaPlugin implements CameraActivity.Camer
 	    else if (switchCameraAction.equals(action)){
 		    return switchCamera(args, callbackContext);
 	    }
-    	
+
     	return false;
     }
 
@@ -104,13 +104,12 @@ public class CameraPreview extends CordovaPlugin implements CameraActivity.Camer
 					}
 					//display camera bellow the webview
 					if(toBack){
-						webView.setBackgroundColor(0x00000000);
-						ViewGroup g = (ViewGroup)webView.getParent();
-						g.setBackgroundColor(0x00000000);
-						g.bringToFront();
+						webView.getView().setBackgroundColor(0x00000000);
+						((ViewGroup)webView.getView()).bringToFront();
 					}
 					else{
 						//set camera back to front
+						containerView.setAlpha(Float.parseFloat(args.getString(8)));
 						containerView.bringToFront();
 					}
 
@@ -164,7 +163,7 @@ public class CameraPreview extends CordovaPlugin implements CameraActivity.Camer
       return true;
     }
 
-    Camera.Parameters params = camera.getParameters();    
+    Camera.Parameters params = camera.getParameters();
 
     try {
       String effect = args.getString(0);
